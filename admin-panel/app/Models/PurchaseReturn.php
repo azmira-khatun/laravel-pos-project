@@ -8,38 +8,34 @@ class PurchaseReturn extends Model
 {
     protected $table = 'purchase_returns';
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'purchase_id',
         'product_id',
-        'product_name',
-        'total_quantity',
-        'subtotal_amount',
-        'tax_amount',
-        'shipping_cost',
-        'return_quantity',
-        'refund_amount',
-        'net_refund',
-        'payment_method',
-        'status',
-        'note',
+        'quantity',
+        'reason',
+        'return_date',
+        'vendor_id',
+        'user_id',
     ];
 
-    /**
-     * Beziehungen / relations
-     */
-
-    // PurchaseReturn belongs to a Purchase
+    // Relationships
     public function purchase()
     {
         return $this->belongsTo(Purchase::class);
     }
 
-    // PurchaseReturn belongs to a Product
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

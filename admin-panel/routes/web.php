@@ -24,7 +24,6 @@ use App\Http\Controllers\PurchaseItemController;
 use App\Http\Controllers\PurchaseReturnController;
 
 
-
 Route::get('/', function () {
     return view('portal');
 });
@@ -199,6 +198,13 @@ Route::put('/expired_products/{expiredProduct}', [ExpiredProductController::clas
 Route::delete('/expired_products/{expiredProduct}', [ExpiredProductController::class, 'destroy'])->name('expiredProductsDelete');
 
 
+Route::get('/purchase-returns', [PurchaseReturnController::class, 'index'])->name('purchaseReturns.index');
+Route::get('/purchase-returns/create', [PurchaseReturnController::class, 'create'])->name('purchaseReturns.create');
+Route::post('/purchase-returns', [PurchaseReturnController::class, 'store'])->name('purchaseReturns.store');
+Route::get('/purchase-returns/{return}', [PurchaseReturnController::class, 'show'])->name('purchaseReturns.show');
+Route::get('/purchase-returns/{return}/edit', [PurchaseReturnController::class, 'edit'])->name('purchaseReturns.edit');
+Route::put('/purchase-returns/{return}', [PurchaseReturnController::class, 'update'])->name('purchaseReturns.update');
+Route::delete('/purchase-returns/{return}', [PurchaseReturnController::class, 'destroy'])->name('purchaseReturns.destroy');
 
 
 
