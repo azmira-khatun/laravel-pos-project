@@ -13,6 +13,7 @@ use App\Http\Controllers\DamageProductController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SalesItemController;
 use App\Http\Controllers\PurchaseInvoiceController;
+use App\Http\Controllers\SalesInvoiceController;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VendorController;
@@ -233,6 +234,9 @@ Route::put('/sales-items/{salesItem}', [SalesItemController::class, 'update'])->
 Route::delete('/sales-items/{salesItem}', [SalesItemController::class, 'destroy'])->name('salesItems.destroy');
 
 
+Route::get('/sales_invoices', [SalesInvoiceController::class, 'index'])->name('salesInvoiceIndex');
+Route::get('/sales_invoices/{invoice}', [SalesInvoiceController::class, 'show'])->name('salesInvoiceShow');
+Route::get('/sales_invoices/{invoice}/edit', [SalesInvoiceController::class, 'edit'])->name('salesInvoiceEdit');
 
 // 🧾 Purchase Invoices Routes
 // Purchase Invoices Routes

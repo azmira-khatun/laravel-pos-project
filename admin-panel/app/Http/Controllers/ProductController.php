@@ -14,11 +14,21 @@ class ProductController extends Controller
     // SINGLE PRODUCT CRUD
     // -----------------------------
 
-    public function index()
-    {
-        $products = Product::with(['category', 'subCategory', 'productUnit'])->paginate(10);
-        return view('pages.products.index', compact('products'));
-    }
+public function index()
+{
+    // === FIX: Fetch only the category with ID = 1, and its nested relationships ===
+    $categories = Category::where('id', 1)
+        ->with([
+            'subCategories.products.productUnit' => function ($query) {
+                // Eager load SubCategory and ProductUnit relationships for the products
+                $query->with(['subCategory', 'productUnit']);
+            }
+        ])
+        ->get();
+    // =============================================================================
+
+    return view('pages.products.index', compact('categories'));
+}
 
     public function create()
     {

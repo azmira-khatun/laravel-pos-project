@@ -133,6 +133,13 @@
 
 
 
+<li class="nav-item">
+                    <a href="{{ route('salesInvoiceIndex') }}" class="nav-link">
+                        <i class="bi bi-people-fill"></i>
+                        <p>Sale Invoices</p>
+                    </a>
+                </li>
+
 
                 <li class="nav-item">
                     <a href="{{ route('purchase_items.index') }}" class="nav-link">
