@@ -10,13 +10,13 @@ class PurchaseReturnController extends Controller
     public function index()
     {
         $returns = PurchaseReturn::with(['purchase', 'product', 'vendor', 'user'])->get();
-        return view('purchase_returns.index', compact('returns'));
+        return view('pages.purchase_returns.index', compact('returns'));
     }
 
     public function create()
     {
         // যদি প্রয়োজন হয়, purchase/product/vendor/user data এনে form দেখাও
-        return view('purchase_returns.create');
+        return view('pages.purchase_returns.create');
     }
 
     public function store(Request $request)
@@ -39,13 +39,13 @@ class PurchaseReturnController extends Controller
     public function show($id)
     {
         $return = PurchaseReturn::with(['purchase', 'product', 'vendor', 'user'])->findOrFail($id);
-        return view('purchase_returns.show', compact('return'));
+        return view('pages.purchase_returns.show', compact('return'));
     }
 
     public function edit($id)
     {
         $return = PurchaseReturn::findOrFail($id);
-        return view('purchase_returns.edit', compact('return'));
+        return view('pages.purchase_returns.edit', compact('return'));
     }
 
     public function update(Request $request, $id)

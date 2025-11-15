@@ -149,6 +149,17 @@
                 </li>
 
 
+
+                <li class="nav-item">
+                    <a href="{{ route('purchaseReturns.index') }}" class="nav-link">
+                        <i class="bi bi-people-fill"></i>
+                        <p>Purchase returns</p>
+                    </a>
+                </li>
+
+
+
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('purchase_returns.index') }}">
                         Purchase Returns
