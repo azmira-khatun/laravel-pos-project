@@ -60,7 +60,7 @@ class SaleController extends Controller
         $productUnits = ProductUnit::all();
         $paymentMethods = PaymentMethod::all();
 
-        return view('sales.edit', compact('sale', 'customers', 'products', 'productUnits', 'paymentMethods'));
+        return view('pages.sales.edit', compact('sale', 'customers', 'products', 'productUnits', 'paymentMethods'));
     }
 
     // Update sale
