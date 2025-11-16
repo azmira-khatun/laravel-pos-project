@@ -125,7 +125,7 @@
 
 
 <li class="nav-item">
-                    <a href="{{ route('salesItems.index') }}" class="nav-link">
+                    <a href="{{ route('salesitems.index') }}" class="nav-link">
                         <i class="bi bi-people-fill"></i>
                         <p>Sale Items</p>
                     </a>

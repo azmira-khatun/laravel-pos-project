@@ -231,14 +231,23 @@ Route::put('/sales/{sale}', [SaleController::class, 'update'])->name('sales.upda
 Route::delete('/sales/{sale}', [SaleController::class, 'destroy'])->name('sales.destroy');
 
 
-Route::get('/sales-items', [SalesItemController::class, 'index'])->name('salesItems.index');
-Route::get('/sales-items/create', [SalesItemController::class, 'create'])->name('salesItems.create');
-Route::post('/sales-items', [SalesItemController::class, 'store'])->name('salesItems.store');
-Route::get('/sales-items/{salesItem}', [SalesItemController::class, 'show'])->name('salesItems.show');
-Route::get('/sales-items/{salesItem}/edit', [SalesItemController::class, 'edit'])->name('salesItems.edit');
-Route::put('/sales-items/{salesItem}', [SalesItemController::class, 'update'])->name('salesItems.update');
-Route::delete('/sales-items/{salesItem}', [SalesItemController::class, 'destroy'])->name('salesItems.destroy');
+Route::prefix('sales-items')->group(function () {
 
+    Route::get('/', [SalesItemController::class, 'index'])->name('salesitems.index');
+
+    Route::get('/create', [SalesItemController::class, 'create'])->name('salesitems.create');
+
+    Route::post('/', [SalesItemController::class, 'store'])->name('salesitems.store');
+
+    Route::get('/{salesItem}', [SalesItemController::class, 'show'])->name('salesitems.show');
+
+    Route::get('/{salesItem}/edit', [SalesItemController::class, 'edit'])->name('salesitems.edit');
+
+    Route::put('/{salesItem}', [SalesItemController::class, 'update'])->name('salesitems.update');
+
+    Route::delete('/{salesItem}', [SalesItemController::class, 'destroy'])->name('salesitems.destroy');
+
+});
 
 Route::get('/sales_invoices', [SalesInvoiceController::class, 'index'])->name('salesInvoiceIndex');
 Route::get('/sales_invoices/{invoice}', [SalesInvoiceController::class, 'show'])->name('salesInvoiceShow');

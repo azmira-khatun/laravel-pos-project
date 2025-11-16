@@ -3,71 +3,198 @@
 namespace App\Http\Controllers;
 
 use App\Models\SalesItem;
+use App\Models\Sale;
 use App\Models\Product;
 use App\Models\ProductUnit;
-use App\Models\Sale;
-use App\Models\Discount;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use App\Models\Customer;
+use App\Models\PaymentMethod;
 class SalesItemController extends Controller
 {
-    // ---------------------- INDEX ----------------------
+    /**
+     * Display a listing of the sales items.
+     */
     public function index()
     {
-        $items = SalesItem::with(['sale', 'product', 'productUnit', 'discount'])
-                          ->orderBy('id', 'desc')
-                          ->paginate(15);
+        $items = SalesItem::with(['sale', 'product', 'unit'])
+            ->orderBy('id', 'desc')
+            ->paginate(20);
 
-        return view('pages.sales_items.index', compact('items'));
+        return view('pages.salesitems.index', compact('items'));
     }
 
-    // ---------------------- CREATE ----------------------
-    public function create()
-    {
-        $sales      = Sale::orderBy('id','desc')->get();
-        $products   = Product::all();
-        $units      = ProductUnit::all();
-        $discounts  = Discount::all();
+    /**
+     * Show the form for creating a new sales item (single).
+     */
 
-        return view('pages.sales_items.create', compact('sales','products','units','discounts'));
-    }
+public function create()
+{
+    // Fetch all customers, products, and payment methods
+    $customers = Customer::all();
+    $products = Product::all();
+    $paymentMethods = PaymentMethod::all();
 
-    // ---------------------- STORE ----------------------
+    // Pass them to the view
+    return view('pages.salesitems.create', compact('customers', 'products', 'paymentMethods'));
+}
+
+    /**
+     * Store a single new sales item.
+     */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'sale_id'         => 'required|integer|exists:sales,id',
-            'product_id'      => 'required|integer|exists:products,id',
-            'productunit_id'  => 'required|integer|exists:product_units,id',
-            'quantity'        => 'required|integer|min:1',
-            'unit_price'      => 'required|numeric|min:0',
-            'discount_id'     => 'nullable|integer|exists:discounts,id',
-            'discount_amount' => 'nullable|numeric|min:0',
-            'line_total'      => 'required|numeric|min:0',
+        $request->validate([
+            'sale_id'        => 'required',
+            'product_id'     => 'required',
+            'productunit_id' => 'required',
+            'quantity'       => 'required|numeric|min:1',
+            'unit_price'     => 'required|numeric|min:0',
+            'discount_amount'=> 'nullable|numeric|min:0',
         ]);
 
-        SalesItem::create($data);
+        DB::beginTransaction();
 
-        return redirect()->route('salesItems.index')
-                         ->with('success', 'Sales item created successfully.');
+        try {
+            $lineTotal = ($request->quantity * $request->unit_price) - $request->discount_amount;
+
+            // Insert single sales item
+            $item = SalesItem::create([
+                'sale_id'        => $request->sale_id,
+                'product_id'     => $request->product_id,
+                'productunit_id' => $request->productunit_id,
+                'quantity'       => $request->quantity,
+                'unit_price'     => $request->unit_price,
+                'discount_amount'=> $request->discount_amount ?? 0,
+                'line_total'     => $lineTotal,
+            ]);
+
+            // Update sale total
+            $this->updateSaleTotal($request->sale_id);
+
+            // Decrease stock
+            DB::table('stocks')
+                ->where('product_id', $request->product_id)
+                ->decrement('quantity', $request->quantity);
+
+            DB::commit();
+
+            return redirect()->route('salesitems.index')
+                ->with('success', 'Sales Item Added Successfully!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
     }
 
-    // ---------------------- SHOW ----------------------
-    public function show(SalesItem $salesItem)
+    /**
+     * Show the form for editing the specified sales item.
+     */
+    public function edit($id)
     {
-        return view('pages.sales_items.show', compact('salesItem'));
+        return view('salesitems.edit', [
+            'item'     => SalesItem::findOrFail($id),
+            'sales'    => Sale::all(),
+            'products' => Product::all(),
+            'units'    => ProductUnit::all(),
+        ]);
     }
 
-    // ---------------------- EDIT ----------------------
-    public function edit(SalesItem $salesItem)
+    /**
+     * Update the specified sales item.
+     */
+    public function update(Request $request, $id)
     {
-        $sales      = Sale::orderBy('id','desc')->get();
-        $products   = Product::all();
-        $units      = ProductUnit::all();
-        $discounts  = Discount::all();
+        $request->validate([
+            'product_id'     => 'required',
+            'productunit_id' => 'required',
+            'quantity'       => 'required|numeric|min:1',
+            'unit_price'     => 'required|numeric|min:0',
+            'discount_amount'=> 'nullable|numeric|min:0',
+        ]);
 
-        return view('pages.sales_items.edit', compact('salesItem','sales','products','units','discounts'));
+        $item = SalesItem::findOrFail($id);
+
+        DB::beginTransaction();
+
+        try {
+            // restore previous stock
+            DB::table('stocks')
+                ->where('product_id', $item->product_id)
+                ->increment('quantity', $item->quantity);
+
+            $lineTotal = ($request->quantity * $request->unit_price) - $request->discount_amount;
+
+            $item->update([
+                'product_id'     => $request->product_id,
+                'productunit_id' => $request->productunit_id,
+                'quantity'       => $request->quantity,
+                'unit_price'     => $request->unit_price,
+                'discount_amount'=> $request->discount_amount ?? 0,
+                'line_total'     => $lineTotal,
+            ]);
+
+            // update new stock
+            DB::table('stocks')
+                ->where('product_id', $request->product_id)
+                ->decrement('quantity', $request->quantity);
+
+            // Update sale total
+            $this->updateSaleTotal($item->sale_id);
+
+            DB::commit();
+
+            return redirect()->route('salesitems.index')
+                ->with('success', 'Sales Item Updated Successfully!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
     }
 
-    // ---------------
+    /**
+     * Remove the specified sales item.
+     */
+    public function destroy($id)
+    {
+        $item = SalesItem::findOrFail($id);
+
+        DB::beginTransaction();
+
+        try {
+            // restore stock
+            DB::table('stocks')
+                ->where('product_id', $item->product_id)
+                ->increment('quantity', $item->quantity);
+
+            $sale_id = $item->sale_id;
+            $item->delete();
+
+            // update sale total
+            $this->updateSaleTotal($sale_id);
+
+            DB::commit();
+
+            return redirect()->route('salesitems.index')
+                ->with('success', 'Sales Item Deleted Successfully!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Helper: Update total amount in sale parent table.
+     */
+    private function updateSaleTotal($sale_id)
+    {
+        $total = SalesItem::where('sale_id', $sale_id)->sum('line_total');
+
+        Sale::where('id', $sale_id)->update([
+            'total_amount' => $total
+        ]);
+    }
 }
