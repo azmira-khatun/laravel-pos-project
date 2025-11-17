@@ -211,6 +211,7 @@ Route::delete('/purchase-returns/{return}', [PurchaseReturnController::class, 'd
 
 
 // 🧾 Purchases Routes
+Route::get('/purchase', [PurchaseController::class, 'index'])->name('purchase.index');
 
 Route::get('/purchases/history', [PurchaseController::class, 'history'])->name('purchases.history');
 Route::get('/purchases/create', [PurchaseController::class, 'create'])->name('purchases.create');

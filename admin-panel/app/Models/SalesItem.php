@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SalesItem extends Model
 {
     protected $table = 'sales_items';
+    public $timestamps = true;
 
     protected $fillable = [
         'sale_id',
@@ -15,16 +15,28 @@ class SalesItem extends Model
         'productunit_id',
         'quantity',
         'unit_price',
-        'discount_id',
+        'discount_id', // added
         'discount_amount',
         'tax_amount',
         'batch_no',
         'expiry_date',
         'description',
         'line_total',
-        'total_cost',
         'status',
     ];
+
+    protected $casts = [
+        'quantity'        => 'integer',
+        'unit_price'      => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'tax_amount'      => 'decimal:2',
+        'line_total'      => 'decimal:2',
+        'expiry_date'     => 'date',
+    ];
+
+    // -------------------------
+    // Relationships
+    // -------------------------
 
     public function sale()
     {
@@ -36,8 +48,15 @@ class SalesItem extends Model
         return $this->belongsTo(Product::class);
     }
 
+    // Item belongs to a unit (using productunit_id as per migration)
     public function unit()
     {
         return $this->belongsTo(ProductUnit::class, 'productunit_id');
+    }
+
+    // Item can belong to a discount (using discount_id as per migration)
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class);
     }
 }

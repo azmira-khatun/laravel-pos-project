@@ -11,42 +11,42 @@ class CreateSalesItemsTable extends Migration
         Schema::create('sales_items', function (Blueprint $table) {
             $table->id();
 
-            // Foreign Keys
+            // Foreign keys
             $table->unsignedBigInteger('sale_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('productunit_id');
+            $table->unsignedBigInteger('productunit_id')->nullable(); // unit optional
 
-            // Main Fields
+            // Basic fields
             $table->integer('quantity')->default(1);
             $table->decimal('unit_price', 10, 2)->default(0);
 
-            // Discount fields
+            // Discount
             $table->unsignedBigInteger('discount_id')->nullable();
             $table->decimal('discount_amount', 10, 2)->default(0);
 
             // Tax
             $table->decimal('tax_amount', 10, 2)->default(0);
 
-            // Batch and expiry
+            // Batch & expiry
             $table->string('batch_no')->nullable();
             $table->date('expiry_date')->nullable();
 
-            // Extra fields
+            // Extra
             $table->text('description')->nullable();
 
             // Totals
             $table->decimal('line_total', 12, 2)->default(0);
-            $table->decimal('total_cost', 12, 2)->default(0);
 
-            // Status field
-            $table->string('status')->default('active');
+            // Status
+            $table->enum('status', ['active', 'returned', 'cancelled'])->default('active');
 
             $table->timestamps();
 
             // Foreign Keys
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('productunit_id')->references('id')->on('product_units')->onDelete('cascade');
+            $table->foreign('productunit_id')->references('id')->on('product_units')->onDelete('set null');
+            $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('set null');
         });
     }
 

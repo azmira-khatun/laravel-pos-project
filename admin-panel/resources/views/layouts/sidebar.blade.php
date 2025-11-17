@@ -108,7 +108,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('purchases.history') }}" class="nav-link">
+                    <a href="{{ route('purchase.index') }}" class="nav-link">
                         <i class="bi bi-people-fill"></i>
                         <p>Purchase</p>
                     </a>

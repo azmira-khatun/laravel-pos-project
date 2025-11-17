@@ -7,33 +7,44 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     protected $fillable = [
-        'productunit_id',
         'customer_id',
-        'product_id',
         'payment_method_id',
         'payment_status',
         'paid_amount',
+        'subtotal_amount',
+        'discount_amount',
+        'tax_amount',
+        'shipping_cost',
+        'total_cost',
+        'due_amount',
         'sell_date',
     ];
 
+    // --------------------------
     // Relationships
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
+    // --------------------------
 
+    // A sale belongs to one customer
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function productUnit()
-    {
-        return $this->belongsTo(ProductUnit::class, 'productunit_id');
-    }
-
+    // A sale belongs to one payment method
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    // A sale has many items
+    public function items()
+    {
+        return $this->hasMany(SalesItem::class);
+    }
+
+    // Access products through items (optional)
+    public function products()
+    {
+        return $this->hasManyThrough(Product::class, SalesItem::class);
     }
 }

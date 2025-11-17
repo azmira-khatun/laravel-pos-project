@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,13 +9,24 @@ return new class extends Migration {
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('productunit_id')->nullable();
-            $table->unsignedBigInteger('payment_method_id');
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('product_id'); // NOT NULL
+            $table->unsignedBigInteger('payment_method_id');
+
+            // Payment Info
             $table->string('payment_status')->default('Due');
             $table->decimal('paid_amount', 12, 2)->default(0);
-            $table->dateTime('sell_date')->default(now());
+
+            // Calculations for multi-product
+            $table->decimal('subtotal_amount', 12, 2)->default(0);
+            $table->decimal('discount_amount', 12, 2)->default(0);
+            $table->decimal('tax_amount', 12, 2)->default(0);
+            $table->decimal('shipping_cost', 12, 2)->default(0);
+            $table->decimal('total_cost', 12, 2)->default(0);
+            $table->decimal('due_amount', 12, 2)->default(0);
+
+            // Sell date
+            $table->dateTime('sell_date')->nullable();
+
             $table->timestamps();
         });
     }

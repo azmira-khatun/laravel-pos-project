@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\DB;
 
 class PurchaseController extends Controller
 {
+
+
+public function index()
+{
+    // Get all purchases, latest first, with vendor & product relationships
+    $purchases = \App\Models\Purchase::with(['vendor', 'product'])
+                    ->orderBy('id', 'desc')
+                    ->paginate(10); // optional pagination
+
+    return view('pages.purchases.index', compact('purchases'));
+}
+
     /**
      * Show create purchase page (multiple products)
      */
@@ -88,5 +100,28 @@ class PurchaseController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+     public function history()
+    {
+        // Get all purchases, latest first
+        $purchases = Purchase::orderBy('id', 'desc')->paginate(15); // pagination optional
+
+        // Return a view (create resources/views/purchases/history.blade.php)
+        return view('pages.purchases.history', compact('purchases'));
+
+        // Or return JSON for API:
+        // return response()->json($purchases);
+    }
+    public function show($id)
+{
+    // Find the purchase by ID with vendor and product
+    $purchase = \App\Models\Purchase::with(['vendor', 'product'])->findOrFail($id);
+
+    // Return a view (create resources/views/purchases/show.blade.php)
+    return view('purchases.show', compact('purchase'));
+
+    // If API, you could return JSON instead:
+    // return response()->json($purchase);
+}
+
 
 }
