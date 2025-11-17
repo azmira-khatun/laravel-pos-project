@@ -16,12 +16,12 @@ class PaymentController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(20);
 
-        return view('payments.index', compact('payments'));
+        return view('pages.payments.index', compact('payments'));
     }
 
     public function create()
     {
-        return view('payments.create', [
+        return view('pages.payments.create', [
             'sales' => Sale::all(),
             'purchases' => Purchase::all(),
             'methods' => PaymentMethod::all(),
