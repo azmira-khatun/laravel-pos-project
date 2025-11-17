@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,11 +15,18 @@ class SalesItem extends Model
         'productunit_id',
         'quantity',
         'unit_price',
+        'discount_id',
         'discount_amount',
+        'tax_amount',
+        'batch_no',
+        'expiry_date',
+        'description',
         'line_total',
+        'total_cost',
+        'status',
     ];
 
-     public function sale()
+    public function sale()
     {
         return $this->belongsTo(Sale::class);
     }

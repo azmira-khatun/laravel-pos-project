@@ -9,21 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('purchase_items', function (Blueprint $table) {
-            // payment_method_id কলাম যোগ করা
-            $table->unsignedBigInteger('payment_method_id')->nullable()->after('purchase_id');
 
-            // foreign key constraint
-            $table->foreign('payment_method_id')
-                  ->references('id')
-                  ->on('payment_methods')
-                  ->onDelete('set null'); // অথবা cascade, যেভাবে চাও
+            if (!Schema::hasColumn('purchase_items', 'payment_method_id')) {
+                // সবচেয়ে নিরাপদ পদ্ধতি: foreignId() helper ব্যবহার করা
+                $table->foreignId('payment_method_id')
+                      ->nullable()
+                      ->constrained('payment_methods') // এটি references('id')->on('payment_methods') এর কাজ করে
+                      ->onDelete('set null')
+                      ->after('purchase_id');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('purchase_items', function (Blueprint $table) {
-            // foreign key drop করা
+            // Foreign key drop করা
             $table->dropForeign(['payment_method_id']);
 
             // কলাম drop করা
