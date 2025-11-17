@@ -203,6 +203,19 @@
                     </a>
                 </li>
 
+
+
+
+
+ <li class="nav-item">
+                    <a href="{{ route('stockMovements.index') }}" class="nav-link">
+                        <i class="bi bi-people-fill"></i>
+                        <p>stock movement</p>
+                    </a>
+                </li>
+
+
+
                 <li class="nav-item">
                     <a href="{{ route('stocks.index') }}" class="nav-link">
                         <i class="bi bi-credit-card-2-front-fill"></i> <!-- Bootstrap Icons -->

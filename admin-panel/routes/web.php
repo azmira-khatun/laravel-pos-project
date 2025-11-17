@@ -23,6 +23,7 @@ use App\Http\Controllers\ProductUnitController;
 use App\Http\Controllers\PurchaseItemController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StockMovementController;
 
 
 Route::get('/', function () {
@@ -340,3 +341,8 @@ Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name
 Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
 Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
+
+Route::get('/stock-movements', [StockMovementController::class, 'index'])->name('stockMovements.index');
+Route::get('/stock-movements/create', [StockMovementController::class, 'create'])->name('stockMovements.create');
+Route::post('/stock-movements', [StockMovementController::class, 'store'])->name('stockMovements.store');
+Route::get('/stock-movements/{stockMovement}', [StockMovementController::class, 'show'])->name('stockMovements.show');
