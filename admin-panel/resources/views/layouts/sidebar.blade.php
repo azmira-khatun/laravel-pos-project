@@ -203,7 +203,12 @@
                     </a>
                 </li>
 
-
+  <li class="nav-item">
+        <a class="nav-link" href="{{ route('profit-records.index') }}">
+            <i class="bi bi-cash-stack"></i> <!-- icon optional -->
+            Profit Records
+        </a>
+    </li>
 
 
 

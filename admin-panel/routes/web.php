@@ -24,6 +24,7 @@ use App\Http\Controllers\PurchaseItemController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\ProfitRecordController;
 
 
 Route::get('/', function () {
@@ -346,3 +347,11 @@ Route::get('/stock-movements', [StockMovementController::class, 'index'])->name(
 Route::get('/stock-movements/create', [StockMovementController::class, 'create'])->name('stockMovements.create');
 Route::post('/stock-movements', [StockMovementController::class, 'store'])->name('stockMovements.store');
 Route::get('/stock-movements/{stockMovement}', [StockMovementController::class, 'show'])->name('stockMovements.show');
+
+
+
+
+// Profit Records CRUD
+
+Route::get('/profit-records', [ProfitRecordController::class, 'index'])->name('profit-records.index');
+Route::get('/profit-records/{id}', [ProfitRecordController::class, 'show'])->name('profit-records.show');
