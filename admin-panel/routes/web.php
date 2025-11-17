@@ -22,6 +22,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProductUnitController;
 use App\Http\Controllers\PurchaseItemController;
 use App\Http\Controllers\PurchaseReturnController;
+use App\Http\Controllers\PaymentController;
 
 
 Route::get('/', function () {
@@ -231,22 +232,17 @@ Route::get('/sales/{sale}/edit', [SaleController::class, 'edit'])->name('sales.e
 Route::put('/sales/{sale}', [SaleController::class, 'update'])->name('sales.update');
 Route::delete('/sales/{sale}', [SaleController::class, 'destroy'])->name('sales.destroy');
 
+// routes/web.php
 
 Route::prefix('sales-items')->group(function () {
 
     Route::get('/', [SalesItemController::class, 'index'])->name('salesitems.index');
-
     Route::get('/create', [SalesItemController::class, 'create'])->name('salesitems.create');
-
     Route::post('/', [SalesItemController::class, 'store'])->name('salesitems.store');
-
-    Route::get('/{salesItem}', [SalesItemController::class, 'show'])->name('salesitems.show');
-
-    Route::get('/{salesItem}/edit', [SalesItemController::class, 'edit'])->name('salesitems.edit');
-
-    Route::put('/{salesItem}', [SalesItemController::class, 'update'])->name('salesitems.update');
-
-    Route::delete('/{salesItem}', [SalesItemController::class, 'destroy'])->name('salesitems.destroy');
+    Route::get('/{sales_item}', [SalesItemController::class, 'show'])->name('salesitems.show');
+    Route::get('/{sales_item}/edit', [SalesItemController::class, 'edit'])->name('salesitems.edit');
+    Route::put('/{sales_item}', [SalesItemController::class, 'update'])->name('salesitems.update');
+    Route::delete('/{sales_item}', [SalesItemController::class, 'destroy'])->name('salesitems.destroy');
 
 });
 
@@ -335,4 +331,12 @@ Route::post('/purchase_returns/fetch_purchase_data', [PurchaseReturnController::
 // });
 
 
+
+Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
+Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 

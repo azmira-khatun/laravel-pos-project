@@ -50,9 +50,10 @@ class SalesItem extends Model
 
     // Item belongs to a unit (using productunit_id as per migration)
     public function unit()
-    {
-        return $this->belongsTo(ProductUnit::class, 'productunit_id');
-    }
+{
+    // 'productunit_id' ব্যবহার করা হয়েছে, যা আপনার মাইগ্রেশন কলামের নাম
+    return $this->belongsTo(ProductUnit::class, 'productunit_id');
+}
 
     // Item can belong to a discount (using discount_id as per migration)
     public function discount()

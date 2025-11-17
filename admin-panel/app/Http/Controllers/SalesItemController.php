@@ -158,12 +158,20 @@ class SalesItemController extends Controller
     /**
      * List all sales items
      */
-    public function index()
-    {
-        $items = SalesItem::with(['sale', 'product', 'unit'])
-            ->orderBy('id', 'desc')
-            ->paginate(20);
+    // SalesItemController.php
 
-        return view('pages.salesitems.index', compact('items'));
-    }
+// ...
+
+/**
+ * List all sales items
+ */
+public function index()
+{
+    // with(['unit']) ব্যবহার করা হয়েছে যাতে n+1 query problem না হয়
+    $items = SalesItem::with(['sale', 'product', 'unit'])
+        ->orderBy('id', 'desc')
+        ->paginate(20);
+
+    return view('pages.salesitems.index', compact('items'));
+}
 }

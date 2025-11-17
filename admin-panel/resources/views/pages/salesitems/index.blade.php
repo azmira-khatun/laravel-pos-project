@@ -32,20 +32,25 @@
             <tr>
                 <td>{{ $item->id }}</td>
                 <td>#{{ $item->sale_id }}</td>
-                <td>{{ $item->product->name }}</td>
-                <td>{{ $item->unit->unit_name }}</td>
+                {{-- Product Name: ধরে নেওয়া হচ্ছে product_id সবসময় সেট করা আছে --}}
+                <td>{{ $item->product->name ?? 'N/A' }}</td>
+
+                {{-- 🟢 সংশোধন: Optional Chaining ব্যবহার করা হয়েছে --}}
+                <td>{{ $item->unit?->unit_name ?? 'N/A' }}</td>
+
                 <td>{{ $item->quantity }}</td>
                 <td>{{ number_format($item->unit_price, 2) }}</td>
                 <td>{{ number_format($item->discount_amount, 2) }}</td>
                 <td>{{ number_format($item->line_total, 2) }}</td>
                 <td>
-                    <a href="{{ route('salesitems.edit', $item->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    {{-- 💡 রুট প্যারামিটারে $item মডেল ইনস্ট্যান্স পাস করা হচ্ছে --}}
+                    <a href="{{ route('salesitems.edit', $item) }}" class="btn btn-sm btn-warning">Edit</a>
 
-                    <form action="{{ route('salesitems.destroy', $item->id) }}" method="POST" class="d-inline">
+                    <form action="{{ route('salesitems.destroy', $item) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
 
-                        <button onclick="return confirm('Delete this item?')" class="btn btn-sm btn-danger">
+                        <button onclick="return confirm('Are you sure you want to delete this item?')" class="btn btn-sm btn-danger">
                             Delete
                         </button>
                     </form>
